@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <code>
+            <!-- 0.4 -->
+            <!-- -- INSERT TRIGGER
+            DELIMITER //
+            
+            CREATE TRIGGER after_insert_salary_difference
+            AFTER INSERT ON CUSTOMERS
+            FOR EACH ROW
+            BEGIN
+                SET @my_sal_diff = CONCAT('salary inserted is ', NEW.SALARY);
+            END;//
+            
+            DELIMITER ; -->
+            <!-- -- UPDATE TRIGGER
+DELIMITER //
+
+CREATE TRIGGER after_update_salary_difference
+AFTER UPDATE ON CUSTOMERS
+FOR EACH ROW
+BEGIN
+    DECLARE old_salary DECIMAL(10, 2);
+    DECLARE new_salary DECIMAL(10, 2);
+    
+    SET old_salary = OLD.SALARY;
+    SET new_salary = NEW.SALARY;
+	SET @my_sal_diff = CONCAT('salary difference after update is ', NEW.SALARY - OLD.SALARY);
+END;//
+
+DELIMITER ; -->
+<!-- -- DELETE TRIGGER
+DELIMITER //
+
+CREATE TRIGGER after_delete_salary_difference
+AFTER DELETE ON CUSTOMERS
+FOR EACH ROW
+BEGIN
+	SET @my_sal_diff = CONCAT('salary deleted is ', OLD.SALARY);
+END;//
+
+DELIMITER ; -->
+            <!-- o.5 -->
+            <!-- DELIMITER // CREATE PROCEDURE fetch_employee_data() BEGIN -- Declare variables to store cursor values DECLARE emp_id INT; DECLARE emp_name VARCHAR(255); DECLARE emp_age INT; DECLARE emp_salary DECIMAL(10, 2); -- Declare a cursor for the Employee table DECLARE emp_cursor CURSOR FOR SELECT E_id, E_name, Age, Salary FROM Employee; -- Declare a continue handler for the cursor DECLARE CONTINUE HANDLER FOR NOT FOUND SET @finished = 1; -- Open the cursor OPEN emp_cursor; -- Initialize a variable to control cursor loop SET @finished = 0; -- Loop through the cursor results cursor_loop: LOOP -- Fetch the next row from the cursor into variables FETCH emp_cursor INTO emp_id, emp_name, emp_age, emp_salary; -- Check if no more rows to fetch IF @finished = 1 THEN LEAVE cursor_loop; END IF; -- Output or process each row (for demonstration, print the values) SELECT CONCAT('Employee ID: ', emp_id, ', Name: ', emp_name, ', Age: ', emp_age, ', Salary: ', emp_salary) AS Employee_Info; END LOOP; -- Close the cursor CLOSE emp_cursor; END// DELIMITER ; -->
+            <!-- 0.6 -->
+            <!-- DELIMITER // CREATE PROCEDURE merge_rollcall_data() BEGIN DECLARE done INT DEFAULT FALSE; DECLARE n_id INT; DECLARE n_name VARCHAR(255); DECLARE n_birth_date DATE; -- Declare cursor for N_RollCall table DECLARE n_cursor CURSOR FOR SELECT student_id, student_name, birth_date FROM N_RollCall; -- Declare handler for cursor DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE; -- Open the cursor OPEN n_cursor; -- Start looping through cursor results cursor_loop: LOOP -- Fetch data from cursor into variables FETCH n_cursor INTO n_id, n_name, n_birth_date; -- Check if no more rows to fetch IF done THEN LEAVE cursor_loop; END IF; -- Check if the data already exists in O_RollCall IF NOT EXISTS ( SELECT 1 FROM O_RollCall WHERE student_id = n_id ) THEN -- Insert the record into O_RollCall INSERT INTO O_RollCall (student_id, student_name, birth_date) VALUES (n_id, n_name, n_birth_date); END IF; END LOOP; -- Close the cursor CLOSE n_cursor; END// DELIMITER ; -->
+            <!-- CALL merge_rollcall_data(); -->
+           <code> 
+    </div>
+</body>
+</html>
